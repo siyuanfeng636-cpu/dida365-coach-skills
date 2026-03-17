@@ -31,3 +31,26 @@ claude mcp add --transport http dida365 https://mcp.dida365.com
 - “帮我把今天的报告拆成 2 小时时间盒”
 - “复盘今天为什么效率差”
 - “把盒子 2 改到下午 2 点”
+
+## 本机同步
+
+如果你在本仓库里开发这个 skill，推荐直接软链接到本机技能目录：
+
+```bash
+ln -sfn "$(pwd)/superpowers/dida-coach" ~/.codex/skills/dida-coach
+ln -sfn "$(pwd)/superpowers/dida-coach" ~/.claude/skills/dida-coach
+```
+
+同步后重启 Codex 或 Claude Code，让新技能被重新加载。
+
+## 对外一键安装
+
+当仓库推到 GitHub 后，其他人可以直接运行：
+
+```bash
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo siyuanfeng636-cpu/dida365-coach-skills \
+  --path superpowers/dida-coach
+```
+
+安装完成后重启 Codex，即可通过 `$dida-coach` 调用。
