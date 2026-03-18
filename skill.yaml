@@ -1,6 +1,6 @@
 name: dida-coach
-description: 滴答清单任务教练，负责目标拆解、时间盒安排、复盘分析与闭环支持
-version: 1.0.1
+description: 滴答清单任务教练与任务管家，负责目标拆解、时间盒安排，并以更自然的对话方式查询、创建、更新、复盘分析与闭环支持
+version: 1.0.3
 author: openclaw
 
 setup:
@@ -23,6 +23,8 @@ entry_points:
 triggers:
   - pattern: "(我想|我要|计划|目标).*"
     prompt: prompts/task_breakdown.md
+  - pattern: "(今天有哪些任务|今天.*未完成|明天有哪些任务|列出所有清单|所有清单|查看.*清单|查看.*项目|搜索任务|查一下|筛选.*任务|按.*筛.*任务|标记.*完成|完成这个任务|把.*任务.*移到|移动.*任务|创建.*任务|创建一个任务|改提醒|改优先级|改截止时间).*"
+    prompt: prompts/task_management.md
   - pattern: "(做|完成|准备|安排).*"
     prompt: prompts/timebox_creation.md
   - pattern: "(复盘|回顾|总结).*"

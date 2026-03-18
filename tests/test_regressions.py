@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -119,6 +122,74 @@ class HostAgnosticSetupTest(unittest.TestCase):
                     os.environ["DIDA_COACH_DEFAULT_CONFIG_PATH"] = original_default
 
         self.assertEqual(config["personality"]["preset"], "strict_coach")
+
+
+class PromptContractTest(unittest.TestCase):
+    def test_skill_triggers_cover_common_task_management_intents(self) -> None:
+        skill = yaml.safe_load((ROOT / "skill.yaml").read_text(encoding="utf-8"))
+        trigger_patterns = [item["pattern"] for item in skill.get("triggers", [])]
+        compiled = [re.compile(pattern) for pattern in trigger_patterns]
+
+        examples = [
+            "我今天有哪些任务",
+            "列出所有清单",
+            "把买牛奶标记完成",
+            "把这个任务移到工作清单",
+            "按优先级筛选今天未完成任务",
+        ]
+        for example in examples:
+            self.assertTrue(
+                any(pattern.search(example) for pattern in compiled),
+                msg=f"未命中通用任务管理入口：{example}",
+            )
+
+    def test_task_management_prompt_pins_real_mcp_tools(self) -> None:
+        prompt = (ROOT / "prompts" / "task_management.md").read_text(encoding="utf-8")
+        expected_tools = [
+            "search_task",
+            "get_task_by_id",
+            "list_undone_tasks_by_time_query",
+            "list_projects",
+            "create_task",
+            "complete_task",
+            "move_task",
+            "filter_tasks",
+        ]
+        for tool_name in expected_tools:
+            self.assertIn(tool_name, prompt)
+
+    def test_system_prompt_prefers_natural_dialogue_and_direct_single_actions(self) -> None:
+        prompt = (ROOT / "prompts" / "system.md").read_text(encoding="utf-8")
+        self.assertIn("优先自然对话", prompt)
+        self.assertIn("先基于上下文做合理推断", prompt)
+        self.assertIn("单个明确写操作", prompt)
+        self.assertIn("高风险批量动作", prompt)
+
+    def test_task_management_prompt_only_confirms_high_risk_batches(self) -> None:
+        prompt = (ROOT / "prompts" / "task_management.md").read_text(encoding="utf-8")
+        self.assertIn("单个明确写操作默认直接执行", prompt)
+        self.assertIn("只有高风险批量动作才需要显式确认", prompt)
+        self.assertIn("最多补 1 条高价值建议", prompt)
+
+    def test_timebox_prompt_requires_real_task_materialization(self) -> None:
+        prompt = (ROOT / "prompts" / "timebox_creation.md").read_text(encoding="utf-8")
+        self.assertIn("create_task", prompt)
+        self.assertIn("batch_add_tasks", prompt)
+        self.assertIn("get_task_by_id", prompt)
+        self.assertIn("真实的滴答任务", prompt)
+
+    def test_timebox_prompt_prefers_recommendation_before_questionnaire(self) -> None:
+        prompt = (ROOT / "prompts" / "timebox_creation.md").read_text(encoding="utf-8")
+        self.assertIn("先根据现有描述给一个可执行的时间盒初稿", prompt)
+        self.assertIn("不要把时长确认做成固定选项问卷", prompt)
+
+    def test_review_prompts_allow_natural_summary(self) -> None:
+        daily = (ROOT / "prompts" / "daily_review.md").read_text(encoding="utf-8")
+        weekly = (ROOT / "prompts" / "weekly_review.md").read_text(encoding="utf-8")
+        self.assertIn("先用自然语言总结今天的整体表现", daily)
+        self.assertIn("不要每次都原样输出完整模板", daily)
+        self.assertIn("先给一段自然语言总结本周走势", weekly)
+        self.assertIn("不必硬套完整报告模板", weekly)
 
 
 if __name__ == "__main__":
