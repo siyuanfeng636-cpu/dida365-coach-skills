@@ -18,6 +18,13 @@
 
 如果是重复任务，优先读取当前实例状态，不要把历史完成时间当成今天已完成。
 
+推荐工具组合：
+
+- 今天未完成：`list_undone_tasks_by_time_query(today)`
+- 今天已完成：`list_completed_tasks_by_date`
+
+不要只读取未完成任务，就直接计算“今日完成率”。
+
 ### Step 2: 数据分析
 
 调用 `analyze_daily_tasks()`，整理出：

@@ -11,6 +11,13 @@
 
 按天收集本周任务，确保能按日期分组。
 
+推荐工具组合：
+
+- 本周未完成：`list_undone_tasks_by_date`
+- 本周已完成：`list_completed_tasks_by_date`
+
+如果还要按优先级、标签、类型细分，可追加 `filter_tasks`。
+
 ### Step 2: 计算趋势
 
 调用：

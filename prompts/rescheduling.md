@@ -35,9 +35,11 @@
 
 改时间后应同步：
 
-1. 滴答清单任务截止时间
+1. 用 `update_task` 同步滴答清单任务截止时间
 2. 检查点提醒
 3. 闭环追踪记录
+
+更新后优先用 `get_task_by_id` 回读；如果改动涉及清单归属，再用 `get_task_in_project` 或 `get_project_with_undone_tasks` 核对。
 
 ## 取消全部时
 

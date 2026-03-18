@@ -24,12 +24,35 @@
 - 改时间：读取 `rescheduling.md`，必要时调用 `reschedule_boxes()` 或 `extend_box_duration()`。
 - 日/周复盘：读取 `daily_review.md` 或 `weekly_review.md`，调用 `review_analyzer.py` 中的方法。
 
+## MCP 工具路由
+
+涉及滴答清单读写时，优先遵守 `references/mcp-tool-routing.md`。
+
+- 今天有哪些未完成任务：`list_undone_tasks_by_time_query`
+- 按日期范围查未完成：`list_undone_tasks_by_date`
+- 查已完成任务：`list_completed_tasks_by_date`
+- 关键词搜任务：`search_task`
+- 按 ID 回读任务：`get_task_by_id`
+- 查所有清单：`list_projects`
+- 查清单详情：`get_project_by_id`
+- 查清单及其未完成任务：`get_project_with_undone_tasks`
+- 在某清单里查特定任务：`get_task_in_project`
+- 创建任务：`create_task`
+- 批量创建：`batch_add_tasks`
+- 完成单个任务：`complete_task`
+- 批量完成清单任务：`complete_tasks_in_project`
+- 更新任务属性：`update_task`
+- 移动任务：`move_task`
+- 多条件筛选：`filter_tasks`
+- 批量更新属性：`batch_update_tasks`
+
 ## 滴答字段约束
 
 - 优先级遵循滴答语义：`!1` 低、`!2` 中、`!3` 高。
 - 截止时间和提醒是两套字段；要求“提前 30 分钟提醒”时，不能只设置截止时间。
 - 任务创建或更新后，必须立即回读并核对：标题、优先级、截止时间、提醒时间、当前完成状态。
 - 对重复任务或有历史记录的任务，不要仅凭 `completedTime` 之类的历史完成字段断言“当前已完成”。
+- 不要虚构不存在的 MCP 工具名；如果要查证，先回到 `references/mcp-tool-routing.md`。
 
 ## 文风设定
 
