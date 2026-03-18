@@ -21,7 +21,16 @@ def _user_config_path() -> Path:
     override = os.environ.get("DIDA_COACH_USER_CONFIG_PATH")
     if override:
         return Path(override).expanduser()
-    return Path.home() / ".claude" / "skills" / "dida-coach" / "config.yaml"
+
+    home = Path.home()
+    candidates = [
+        home / ".codex" / "skills" / "dida-coach" / "config.yaml",
+        home / ".claude" / "skills" / "dida-coach" / "config.yaml",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
 
 
 def _read_yaml(path: Path) -> Dict[str, Any]:
