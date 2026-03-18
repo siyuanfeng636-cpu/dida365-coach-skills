@@ -18,6 +18,8 @@ def _candidate_mcp_config_paths() -> List[Path]:
 
     home = Path.home()
     return [
+        home / ".openclaw" / "openclaw.json",
+        home / ".openclaw" / "workspace" / "openclaw.json",
         home / ".codex" / "mcp.json",
         home / ".claude" / "mcp.json",
     ]
@@ -39,22 +41,40 @@ def _find_server(config: Dict[str, Any], server_name: str) -> Optional[Dict[str,
     return None
 
 
+def _extract_server_url(server: Dict[str, Any]) -> str:
+    direct_url = server.get("url")
+    if isinstance(direct_url, str) and direct_url:
+        return direct_url
+
+    transport = server.get("transport")
+    if isinstance(transport, dict):
+        transport_url = transport.get("url")
+        if isinstance(transport_url, str):
+            return transport_url
+
+    return ""
+
+
 def build_setup_guide() -> str:
     """返回 MCP 未配置时的引导文案。"""
 
     return (
         "👋 欢迎使用 Dida Coach！\n\n"
         "检测到你还没有连接滴答清单。先按你当前使用的客户端选择最快路径：\n\n"
-        "1. OpenClaw / ClawHub / 其他带连接按钮的客户端：直接点 dida365 的 Connect、Authorize、Sign in 或 Enable。\n"
-        "2. Claude Desktop：Customize > Connectors > Add Connector > 填 URL > Connect。\n"
-        "3. ChatGPT：设置 > 应用 > 高级设置 > 开发人员模式 > 创建应用 > 填 URL。\n"
-        "4. Cursor / VS Code：在 MCP 设置页添加 dida365，然后点 connect。\n"
-        "5. Claude Code：运行下面这条兜底命令，再按提示授权。\n\n"
+        "1. OpenClaw：优先把 dida365 写进 OpenClaw 的 MCP 配置，再根据界面提示点一次浏览器授权。\n"
+        "   推荐配置片段：\n"
+        '   {"mcpServers":{"dida365":{"transport":{"type":"http","url":"https://mcp.dida365.com"}}}}\n'
+        "2. ClawHub / 其他带连接按钮的客户端：直接点 dida365 的 Connect、Authorize、Sign in 或 Enable。\n"
+        "3. Claude Desktop：Customize > Connectors > Add Connector > 填 URL > Connect。\n"
+        "4. ChatGPT：设置 > 应用 > 高级设置 > 开发人员模式 > 创建应用 > 填 URL。\n"
+        "5. Cursor / VS Code：在 MCP 设置页添加 dida365，然后点 connect。\n"
+        "6. Claude Code：运行下面这条兜底命令，再按提示授权。\n\n"
         "所有客户端统一使用这组连接信息：\n\n"
         f"- 服务名：{DEFAULT_SERVER_NAME}\n"
         f"- 服务地址：{DEFAULT_MCP_URL}\n"
         "- 传输方式：HTTP 或 streamable_http\n"
         f"- Claude Code 兜底命令：claude mcp add --transport http {DEFAULT_SERVER_NAME} {DEFAULT_MCP_URL}\n\n"
+        "如果你在 OpenClaw 里允许我改本地配置，我会优先帮你写入 dida365 的 MCP 配置，再根据页面提示完成浏览器 OAuth。\n\n"
         "完成浏览器授权后，告诉我“已连接”，我会继续帮你拆目标、排时间盒和做复盘。"
     )
 
@@ -84,7 +104,7 @@ def check_mcp_configured(server_name: str = DEFAULT_SERVER_NAME) -> Tuple[bool, 
         if not server:
             continue
 
-        server_url = str(server.get("url") or "")
+        server_url = _extract_server_url(server)
         if server_url and DEFAULT_MCP_URL not in server_url:
             return True, f"✅ 已检测到 {server_name} MCP（URL: {server_url}）"
 
@@ -126,3 +146,18 @@ def get_mcp_server_config(server_name: str = DEFAULT_SERVER_NAME) -> Optional[Di
             return server
 
     return None
+
+
+def build_openclaw_http_config(server_name: str = DEFAULT_SERVER_NAME) -> Dict[str, Any]:
+    """返回 OpenClaw 远程 HTTP MCP 的最小配置片段。"""
+
+    return {
+        "mcpServers": {
+            server_name: {
+                "transport": {
+                    "type": "http",
+                    "url": DEFAULT_MCP_URL,
+                }
+            }
+        }
+    }

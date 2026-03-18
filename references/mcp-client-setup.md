@@ -83,7 +83,40 @@ claude mcp add --transport http dida365 https://mcp.dida365.com
 
 保存后根据提示完成浏览器授权。
 
-## OpenClaw / ClawHub / 其他兼容客户端
+## OpenClaw
+
+优先目标：
+
+1. 让 OpenClaw 本地保存 dida365 MCP 配置
+2. 再根据 OpenClaw 的提示打开浏览器完成 OAuth
+
+如果模型可以改本地文件，优先写入 `~/.openclaw/openclaw.json`，最小配置如下：
+
+```json
+{
+  "mcpServers": {
+    "dida365": {
+      "transport": {
+        "type": "http",
+        "url": "https://mcp.dida365.com"
+      }
+    }
+  }
+}
+```
+
+推荐流程：
+
+1. 把上面的 dida365 配置写入 OpenClaw 的 `mcpServers`
+2. 保存后重启 OpenClaw 或刷新对应工作区
+3. 在 OpenClaw 的 MCP / Tools / 依赖面板里找到 `dida365`
+4. 点击 `Connect`、`Authorize`、`Sign in` 或同类按钮
+5. 在浏览器完成 OAuth 授权
+6. 授权完成后回到对话，继续原来的任务请求
+
+如果运行环境支持浏览器自动化，模型可以帮助打开页面、跟随页面提示，但登录、通行密钥、验证码或 2FA 仍应由用户本人完成。
+
+## ClawHub / 其他兼容客户端
 
 1. 先找页面中的 `dida365` 连接按钮或 MCP 依赖面板
 2. 如果能直接点 `Connect` 或 `Authorize`，优先走浏览器授权

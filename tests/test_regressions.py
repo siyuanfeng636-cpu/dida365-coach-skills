@@ -18,7 +18,11 @@ if str(ROOT) not in sys.path:
 
 from tools.config_manager import load_config
 from tools.dida_semantics import is_current_task_completed, priority_to_numeric
-from tools.mcp_client import build_setup_guide, check_mcp_configured
+from tools.mcp_client import (
+    build_openclaw_http_config,
+    build_setup_guide,
+    check_mcp_configured,
+)
 from tools.task_parser import extract_priority, parse_timebox_input
 
 
@@ -59,6 +63,8 @@ class HostAgnosticSetupTest(unittest.TestCase):
         guide = build_setup_guide()
         self.assertIn("Connect", guide)
         self.assertIn("浏览器", guide)
+        self.assertIn("transport", guide)
+        self.assertIn("https://mcp.dida365.com", guide)
         self.assertIn("Claude Desktop", guide)
         self.assertIn("ChatGPT", guide)
         self.assertNotIn("在客户端内运行：/mcp", guide)
@@ -93,6 +99,51 @@ class HostAgnosticSetupTest(unittest.TestCase):
 
         self.assertTrue(configured)
         self.assertIn("已检测到 dida365 MCP", message)
+
+    def test_check_mcp_configured_reads_openclaw_transport_http_config(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            home = Path(temp_dir)
+            openclaw_path = home / ".openclaw" / "openclaw.json"
+            openclaw_path.parent.mkdir(parents=True, exist_ok=True)
+            openclaw_path.write_text(
+                json.dumps(
+                    {
+                        "mcpServers": {
+                            "dida365": {
+                                "transport": {
+                                    "type": "http",
+                                    "url": "https://mcp.dida365.com",
+                                }
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            original_home = os.environ.get("HOME")
+            os.environ["HOME"] = str(home)
+            try:
+                configured, message = check_mcp_configured()
+            finally:
+                if original_home is None:
+                    os.environ.pop("HOME", None)
+                else:
+                    os.environ["HOME"] = original_home
+
+        self.assertTrue(configured)
+        self.assertIn("已检测到 dida365 MCP", message)
+
+    def test_build_openclaw_http_config_uses_transport_shape(self) -> None:
+        config = build_openclaw_http_config()
+        self.assertEqual(
+            config["mcpServers"]["dida365"]["transport"]["type"],
+            "http",
+        )
+        self.assertEqual(
+            config["mcpServers"]["dida365"]["transport"]["url"],
+            "https://mcp.dida365.com",
+        )
 
     def test_load_config_prefers_existing_codex_user_config(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -164,6 +215,17 @@ class PromptContractTest(unittest.TestCase):
         self.assertIn("先基于上下文做合理推断", prompt)
         self.assertIn("单个明确写操作", prompt)
         self.assertIn("高风险批量动作", prompt)
+        self.assertIn("OpenClaw", prompt)
+
+    def test_setup_docs_pin_openclaw_http_transport_config(self) -> None:
+        reference = (ROOT / "references" / "mcp-client-setup.md").read_text(
+            encoding="utf-8"
+        )
+        prompt = (ROOT / "prompts" / "setup.md").read_text(encoding="utf-8")
+        self.assertIn('"type": "http"', reference)
+        self.assertIn('"url": "https://mcp.dida365.com"', reference)
+        self.assertIn("优先自动把 dida365 写入 OpenClaw 的 `mcpServers`", prompt)
+        self.assertIn("账号登录、通行密钥、验证码和 2FA 必须由用户本人完成", prompt)
 
     def test_task_management_prompt_only_confirms_high_risk_batches(self) -> None:
         prompt = (ROOT / "prompts" / "task_management.md").read_text(encoding="utf-8")

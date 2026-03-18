@@ -2,7 +2,7 @@
 
 [![Stars](https://img.shields.io/github/stars/siyuanfeng636-cpu/dida365-coach-skills?style=social)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v1.0.3-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
+[![Version](https://img.shields.io/badge/version-v1.0.4-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
 
 把滴答清单变成一个可执行的 AI 任务教练和任务管家。这个 skill 负责目标拆解、时间盒安排、通用任务管理、复盘分析和延期后的闭环跟进，同时尽量保持更自然的对话体验。
 
@@ -33,6 +33,7 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
 
 为了尽量降低上手门槛，当前文档采用“浏览器授权优先”：
 
+- OpenClaw 推荐先把 dida365 写入 `~/.openclaw/openclaw.json` 的 `mcpServers`，配置格式是 `transport.type=http` + `transport.url=https://mcp.dida365.com`，再点一次浏览器授权。
 - 如果页面里已经有 `Connect`、`Authorize`、`Sign in`、`Enable` 之类按钮，直接点击并在浏览器完成 OAuth。
 - 只有当客户端不能自动注册 MCP 时，才手动添加 `dida365`。
 
@@ -67,4 +68,4 @@ claude mcp add --transport http dida365 https://mcp.dida365.com
 
 ## 版本
 
-当前稳定版本：`v1.0.3`
+当前稳定版本：`v1.0.4`
