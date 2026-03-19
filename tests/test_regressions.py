@@ -216,6 +216,8 @@ class PromptContractTest(unittest.TestCase):
         self.assertIn("单个明确写操作", prompt)
         self.assertIn("高风险批量动作", prompt)
         self.assertIn("OpenClaw", prompt)
+        self.assertIn("用户当前本地时区", prompt)
+        self.assertIn("当前本地时间 + 目标绝对时间", prompt)
 
     def test_setup_docs_pin_openclaw_http_transport_config(self) -> None:
         reference = (ROOT / "references" / "mcp-client-setup.md").read_text(
@@ -252,6 +254,17 @@ class PromptContractTest(unittest.TestCase):
         self.assertIn("不要每次都原样输出完整模板", daily)
         self.assertIn("先给一段自然语言总结本周走势", weekly)
         self.assertIn("不必硬套完整报告模板", weekly)
+
+    def test_checkpoint_prompt_requires_local_time_recalculation(self) -> None:
+        prompt = (ROOT / "prompts" / "checkpoint.md").read_text(encoding="utf-8")
+        self.assertIn("用户当前本地时间和任务的绝对时间重新计算", prompt)
+        self.assertIn("不要口算", prompt)
+
+    def test_readme_mentions_timezone_and_mcp_latency(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("时区与性能说明", readme)
+        self.assertIn("用户当前本地时区", readme)
+        self.assertIn("远程 HTTP MCP", readme)
 
 
 if __name__ == "__main__":

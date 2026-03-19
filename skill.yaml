@@ -1,6 +1,6 @@
 name: dida-coach
 description: 滴答清单任务教练与任务管家，负责目标拆解、时间盒安排，并以更自然的对话方式查询、创建、更新、复盘分析与闭环支持
-version: 1.0.4
+version: 1.0.5
 author: openclaw
 
 setup:

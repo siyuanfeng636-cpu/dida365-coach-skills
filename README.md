@@ -2,7 +2,7 @@
 
 [![Stars](https://img.shields.io/github/stars/siyuanfeng636-cpu/dida365-coach-skills?style=social)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v1.0.4-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
+[![Version](https://img.shields.io/badge/version-v1.0.5-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
 
 把滴答清单变成一个可执行的 AI 任务教练和任务管家。这个 skill 负责目标拆解、时间盒安排、通用任务管理、复盘分析和延期后的闭环跟进，同时尽量保持更自然的对话体验。
 
@@ -47,6 +47,13 @@ Claude Code 的兜底命令仍然保留：
 claude mcp add --transport http dida365 https://mcp.dida365.com
 ```
 
+## 时区与性能说明
+
+- 所有“现在 / 今天 / 明天 / 还有多久 / 下午几点前”这类相对时间判断，都应以用户当前本地时区为准；未明确时默认按用户环境时区处理。
+- 在汇报“还有 X 分钟 / 小时”前，先以“当前本地时间 + 任务绝对截止时间”重新核算；如果当前时间不可靠，优先汇报绝对时间，不口算剩余时长。
+- 这类带 MCP 的 skill 往往比纯本地 prompt 慢，因为远程 HTTP MCP 会增加网络往返，而创建、更新、完成任务后还会执行一次回读校验。
+- 想更快时，优先用单次只读请求，例如“我今天有哪些任务”；批量写入时尽量一次说完整，减少多轮来回。
+
 ## 常见使用方式
 
 - `用 $dida-coach 帮我把“提高英语口语”拆成三个月计划`
@@ -68,4 +75,4 @@ claude mcp add --transport http dida365 https://mcp.dida365.com
 
 ## 版本
 
-当前稳定版本：`v1.0.4`
+当前稳定版本：`v1.0.5`
