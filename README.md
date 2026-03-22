@@ -2,12 +2,12 @@
 
 [![Stars](https://img.shields.io/github/stars/siyuanfeng636-cpu/dida365-coach-skills?style=social)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v1.0.3-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
+[![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
 
 > **让滴答清单成为你的 AI 效率教练。**
-> 不只是待办清单——而是一套覆盖深度规划、专注执行、数据复盘的全周期效率系统。
+> 不只是待办清单，而是一套覆盖目标拆解、专注执行、管理视角、复盘改进的生产力系统。
 
-```
+```text
 "$dida-coach 帮我把'提高英语口语'拆成 3 个月计划"
 ```
 
@@ -15,14 +15,15 @@
 
 ## 为什么选择 Dida-Coach？
 
-大多数 AI 效率工具止步于*创建*任务。Dida-Coach 更进一步：它能**规划**、**排程**、**追踪**、**复盘**，并从你的执行数据中**学习**——全程通过自然对话完成。
+大多数 AI 效率工具止步于*创建*任务。Dida-Coach 更进一步：它能**规划**、**排程**、**追踪**、**复盘**，并从你的执行数据中**学习**，全程通过自然对话完成。
 
 | 痛点 | Dida-Coach 的解决方案 |
 | :--- | :--- |
-| AI 方案停在聊天窗口，永远到不了手机上 | 通过 MCP 协议同步至滴答清单——手机、平板、手表随时可用 |
-| 通用番茄钟无视任务上下文 | 智能工作方法引擎根据任务类型与精力状态推荐 25 / 30 / 50 / 90 分钟时段 |
+| AI 方案停在聊天窗口，永远到不了手机上 | 通过 MCP 协议同步至滴答清单，手机、平板、手表随时可用 |
+| 通用番茄钟无视任务上下文 | 根据任务类型与精力状态推荐 25 / 30 / 50 / 90 分钟时间盒 |
 | 错过截止日期后无人跟进 | 闭环状态机：创建 → 执行 → 检查点 → 完成 / 重排 / 取消 |
-| 复盘只是模糊的"今天感觉如何？" | 模式识别可定位*何时*、*为何*拖延，并给出自动化建议 |
+| 复盘只是模糊的“今天感觉如何？” | 模式识别可定位何时、为何拖延，并给出自动化建议 |
+| 只有执行，没有管理视角 | 新增本地生产力管控层，沉淀 dashboard、承诺、等待项、专注与周月复盘 |
 
 ---
 
@@ -30,114 +31,124 @@
 
 ### 1. 目标拆解
 
-将长期目标拆分为阶段性计划与可衡量的里程碑。最多 3 轮上下文提问，确保计划贴合你的实际情况。
+将长期目标拆分为阶段性计划与可衡量的里程碑，避免“只有愿望，没有执行层”。
 
-```
-$dida-coach 帮我把"系统学习 Rust"拆成两个月计划
+```text
+$dida-coach 帮我把“系统学习 Rust”拆成两个月计划
 ```
 
 ### 2. 智能 Time-Boxing（时间盒）
 
-每个时间盒包含一个**可验证的交付物**——而非仅仅是一段时长。引擎自动推荐最佳工作方法：
+每个时间盒都包含一个**可验证的交付物**，而不只是时长。
 
 | 方法 | 专注时长 | 适用场景 |
 | :--- | :--- | :--- |
 | 经典番茄钟 | 25 分钟 | 快速任务、邮件批处理 |
 | 弹性番茄钟 | 30 分钟 | 通用知识工作 |
 | 长番茄钟 | 50 分钟 | 深度写作、编程 |
-| 超日节律 (Ultradian Rhythm) | 90 分钟 | 创意工作、复杂分析 |
+| 超日节律 | 90 分钟 | 创意工作、复杂分析 |
 
-### 3. 全面任务管理（v1.0.3 新增）
+### 3. 全面任务管理
 
-不止于教练——通过自然语言管理你的整个滴答清单工作流：
+通过自然语言管理滴答清单：
 
-- **查询**："今天有哪些任务？" / "显示所有清单"
-- **创建**："创建一个任务：买菜，明天下午 6 点截止，高优先级"
-- **更新**："把提醒改成提前 30 分钟"
-- **完成**："把报告任务标记为已完成"
-- **移动**："把'买牛奶'移到生活清单"
-- **筛选**："按优先级筛选今天未完成的任务"
+- 查询任务、清单、筛选条件
+- 创建任务、更新时间、提醒、优先级
+- 标记完成、跨清单移动
+- 所有写操作默认执行后回读验证
 
-每次写入操作均遵循**写入-读取-验证**协议——教练会从滴答清单回读数据，确认字段已正确持久化。
+### 4. 多客户端 MCP 支持
 
-### 4. 多客户端 MCP 支持（v1.0.3 新增）
+支持 Claude Desktop、Claude Code、ChatGPT、Cursor、VS Code、OpenClaw、ClawHub 等客户端。
 
-一套技能，多端通用。为每个平台提供详细的配置指南：
+- 有 `Connect`、`Authorize`、`Sign in` 按钮时，优先直接点击
+- OpenClaw 支持“半自动接入”：先自动写本地 MCP 配置，再点击连接
+- Claude Code 仍保留 `claude mcp add` 作为兜底路径
 
-| 客户端 | 配置方式 |
-| :--- | :--- |
-| Claude Desktop | Connectors 界面 → 一键 OAuth 授权 |
-| ChatGPT | 开发者模式 → 自定义应用 |
-| Claude Code | `claude mcp add` 命令行 |
-| Cursor | `.cursor/mcp.json` 配置文件 |
-| VS Code | 命令面板或 `.vscode/mcp.json` |
-| OpenClaw / ClawHub | 内置 MCP 面板 |
+### 5. MCP 工具路由约束
 
-> **浏览器优先授权**：如果客户端显示"连接"按钮，直接点击即可。手动配置仅作为备用方案。
+严格把用户意图映射到*真实存在的*滴答 MCP 工具名，并要求写后回读：
 
-### 5. MCP 工具路由（v1.0.3 新增）
-
-严格的路由表将每一种用户意图映射到*真实的*滴答清单 MCP 工具名——杜绝幻觉式 API 调用。
-
-```
-"今天有什么任务？"  →  list_undone_tasks_by_time_query
-"创建一个任务"      →  create_task → get_task_by_id（验证）
-"移到工作清单"      →  move_task → get_task_by_id（验证）
-"周复盘"            →  list_completed_tasks_by_date + list_undone_tasks_by_date
+```text
+"今天有什么任务？"   -> list_undone_tasks_by_time_query
+"创建一个任务"       -> create_task -> get_task_by_id
+"把任务移到工作清单" -> move_task -> get_task_by_id
+"做周复盘"           -> list_completed_tasks_by_date + list_undone_tasks_by_date
 ```
 
 ### 6. 四种教练人格
 
-选择最能激励你的风格——可在 `config.yaml` 中配置，也可在对话中随时切换：
-
-| 人格 | 风格 |
-| :--- | :--- |
-| **温暖鼓励型** | 在精力低迷时给予温柔支持 |
-| **严格教练型** | 零废话，以结果为导向的问责 |
-| **理性分析型** | 数据驱动，逻辑清晰，注重模式发现 |
-| **幽默风趣型** | 减轻压力，让复盘也变得有趣 |
+可配置温暖鼓励型、严格教练型、理性分析型、幽默风趣型，也可在对话中临时覆盖。
 
 ### 7. 深度复盘与拖延检测
 
-每日和每周复盘不仅看完成率：
+支持日复盘、周复盘、月复盘，并分析：
 
-- 峰值效率时间窗口分析
-- 任务类型分布统计
-- 拖延模式识别（例如："晚上 8 点后的阅读任务总是失败"）
-- 自动化候选项识别
-- 具体可行的改进建议
+- 完成率与高峰时段
+- 任务类型分布
+- 拖延模式
+- 自动化候选项
+- 下阶段最小有效改进动作
 
 ### 8. 闭环状态机
 
-每个任务全生命周期追踪：
+每个任务都走完整闭环：
 
-```
-已创建 → 执行中 → 检查点 → 已完成
-                      ↓
-                   已重排 → 执行中 → ...
-                      ↓
-                   已取消（附原因）
+```text
+已创建 -> 执行中 -> 检查点 -> 已完成
+                   ↓
+                已重排 -> 执行中 -> ...
+                   ↓
+                已取消（附原因）
 ```
 
-错过的任务会先进行**根因分析**（难度过高？注意力分散？时段不对？），再决定重排方案——而非简单地"明天再试"。
+### 9. 本地生产力管控层（v1.2.0 新增）
+
+在滴答执行层之上，新增本地生产力系统，固定目录：
+
+- `~/.dida-coach/productivity/`
+
+它负责沉淀：
+
+- `dashboard.md`：当前重点、风险、过载提醒
+- `commitments/`：承诺、等待项、委派事项
+- `planning/`：日计划、周计划、专注块
+- `reviews/`：周复盘、月复盘
+- `focus/`：专注记录、干扰模式
+- `routines/`：晨间流程、收尾流程
+
+这层**不是第二套任务数据库**，不会复制完整滴答任务库，只保存管理所需的摘要和索引。
+
+### 10. OpenClaw 半自动接入（v1.2.0 新增）
+
+对 OpenClaw，Dida-Coach 现在优先走半自动接入：
+
+1. 自动把 dida365 写进 `~/.openclaw/openclaw.json`
+2. 刷新或重启 OpenClaw
+3. 在 MCP / Tools / 依赖面板里点击 `Connect`、`Authorize` 或 `Sign in`
+4. 浏览器完成 OAuth 后回到对话继续
+
+注意：
+
+- 不要把 `/mcp` 当成 shell 命令
+- 不要裸打开 `https://mcp.dida365.com/oauth/authorize`
+
+### 11. 像 Getnote 一样的本地 OAuth（v1.2.0 新增）
+
+如果你想要更接近 Getnote 的体验，也可以走**滴答开放平台本地 OAuth**：
+
+1. 在滴答开放平台创建应用
+2. 回调地址填 `http://localhost:38000/callback`
+3. 使用本仓库内置 helper 生成授权链接
+4. 授权成功后自动把 token 写入 `~/.dida-coach/dida-openapi.env`
+
+这条路线适合希望“点授权后自动落盘凭证”的用户。
 
 ---
 
 ## 快速上手
 
-### 1. 连接滴答清单 MCP
-
-```bash
-# Claude Code
-claude mcp add --transport http dida365 https://mcp.dida365.com
-
-# 然后在会话中授权
-/mcp
-```
-
-其他客户端请参阅 [`references/mcp-client-setup.md`](references/mcp-client-setup.md)。
-
-### 2. 安装技能
+### 1. 安装技能
 
 ```bash
 python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
@@ -145,105 +156,90 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
   --path .
 ```
 
-### 3. 开始使用
+安装后重启 Codex、OpenClaw 或兼容客户端。
+
+### 2. 连接滴答清单 MCP
+
+默认优先远程 MCP 路线：
+
+- 服务地址：`https://mcp.dida365.com`
+- OpenClaw：优先半自动接入
+- 其他客户端：优先页面里的 `Connect` / `Authorize`
+
+Claude Code 兜底命令：
 
 ```bash
+claude mcp add --transport http dida365 https://mcp.dida365.com
+```
+
+不同客户端的最短配置方式见：
+
+- [`references/mcp-client-setup.md`](references/mcp-client-setup.md)
+
+### 3. 可选：使用本地 Open API OAuth
+
+如果你想要“像 Getnote 一样”的授权体验：
+
+1. 去滴答开放平台创建应用
+2. 回调地址填 `http://localhost:38000/callback`
+3. 运行：
+
+```bash
+python3 scripts/dida_openapi_oauth.py \
+  --client-id YOUR_CLIENT_ID \
+  --client-secret YOUR_CLIENT_SECRET \
+  --open-browser
+```
+
+详细说明见：
+
+- [`references/openapi-auth-setup.md`](references/openapi-auth-setup.md)
+
+### 4. 开始使用
+
+```text
 $dida-coach 帮我把今天的报告排成 2 小时时间盒
 $dida-coach 告诉我今天有哪些未完成任务
-$dida-coach 列出所有清单并把"买牛奶"移到生活清单
+$dida-coach 列出所有清单并把“买牛奶”移到生活清单
 $dida-coach 复盘今天为什么效率差
-$dida-coach 把盒子 2 改到下午 2 点
+$dida-coach 帮我建立生产力系统，并从现有滴答任务生成初稿
+$dida-coach 看一下我当前最该推进什么
+$dida-coach 帮我梳理这周承诺和等待项
+$dida-coach 记录这次专注和干扰原因
+$dida-coach 做月复盘，看看为什么推进不动
 ```
 
-### 4. 个性化配置（可选）
+### 5. 个性化配置（可选）
 
-编辑 `config.yaml` 以设置默认人格、偏好工作方法和提醒时间表。
+编辑 `config.yaml`，可以设置：
 
----
-
-## 架构："AI 思考，滴答执行"
-
-```
-┌─────────────────────┐     MCP 协议       ┌──────────────────┐
-│  OpenClaw / Claude   │◄───────────────────►│   滴答清单云端   │
-│  （规划大脑）         │   读取 / 写入任务   │  （执行中枢）     │
-└─────────┬───────────┘                      └────────┬─────────┘
-          │                                           │
-    深度推理                                     多设备同步
-    目标拆解                                     手机 / 平板 / 手表
-    工作方法匹配                                 推送通知
-    复盘分析                                     一键完成
-```
-
-**桌面端规划。移动端执行。数据回流。AI 持续学习。**
+- 默认教练人格
+- 工作方法
+- 提醒时间
+- 本地生产力系统根目录与受管文件
 
 ---
 
-## 项目结构
+## 时区与性能说明
 
-```
-dida-coach/
-├── skill.yaml              # 技能元数据、触发器、入口点
-├── SKILL.md                # 工作流入口 & 意图路由指南
-├── config.yaml             # 人格、工作方法、提醒配置
-├── prompts/
-│   ├── system.md           # 核心系统角色 & MCP 路由
-│   ├── task_breakdown.md   # 目标拆解流程
-│   ├── task_management.md  # 通用 CRUD 任务操作（新增）
-│   ├── timebox_creation.md # 时间盒排程流程
-│   ├── checkpoint.md       # 检查点跟进
-│   ├── rescheduling.md     # 时间调整流程
-│   ├── daily_review.md     # 每日复盘
-│   ├── weekly_review.md    # 每周复盘
-│   ├── closure.md          # 收尾 & 后续跟进
-│   ├── setup.md            # 首次 MCP 配置
-│   └── coach_personas/     # 4 种人格定义
-├── tools/
-│   ├── mcp_client.py       # MCP 检测 & 配置引导
-│   ├── config_manager.py   # 配置加载 & 用户覆盖
-│   ├── task_parser.py      # 目标与时间盒的自然语言解析
-│   ├── timebox_calculator.py  # 排程计算
-│   ├── work_method_recommender.py  # 智能工作方法推荐
-│   ├── review_analyzer.py  # 完成情况分析 & 报告
-│   └── dida_semantics.py   # 优先级映射 & 状态安全
-├── references/
-│   ├── dida-field-semantics.md   # 滴答清单字段参考
-│   ├── mcp-client-setup.md       # 多客户端配置指南（新增）
-│   └── mcp-tool-routing.md       # 意图 → MCP 工具映射（新增）
-├── agents/                 # Agent 配置
-├── assets/                 # UI 原型
-└── tests/                  # 回归测试
-```
+- 所有“现在 / 今天 / 明天 / 还有多久 / 下午几点前”这类相对时间判断，都以用户当前本地时区为准
+- 说“还有 X 分钟 / 小时”前，必须基于当前本地时间和目标绝对时间重新计算
+- 含远程 MCP 的 skill 比纯本地 prompt 慢，因为远程 HTTP MCP 有网络往返，写后还会做回读校验
+- 想更快时，优先用单次只读请求；批量写入时尽量一次把意图说完整
 
 ---
 
-## 技术栈
+## 仓库结构
 
-- **引擎**：Python 3.10+
-- **接口**：OpenClaw Skill API / Codex
-- **后端**：滴答清单 via MCP（Model Context Protocol）
-- **智能层**：自定义 NLP 解析器 + 闭环状态机
+- [`SKILL.md`](SKILL.md)：技能入口说明
+- [`skill.yaml`](skill.yaml)：技能元数据与触发器
+- [`config.yaml`](config.yaml)：默认人格、工作法、提醒与本地系统配置
+- [`prompts/`](prompts/)：任务管理、生产力管控、时间盒、复盘等提示词
+- [`references/`](references/)：MCP 接入、开放平台 OAuth、字段语义与工具路由说明
+- [`tools/`](tools/)：MCP 检测、本地配置写入、Open API OAuth、本地生产力系统逻辑
+- [`scripts/`](scripts/)：本地 OAuth helper
+- [`tests/`](tests/)：回归测试
 
----
+## 版本
 
-## v1.0.3 更新内容
-
-- **通用任务管理**：完整 CRUD 支持——通过自然对话查询、创建、更新、完成、移动、筛选任务
-- **MCP 工具路由**：严格的意图-工具映射，杜绝幻觉式 API 调用
-- **多客户端配置**：涵盖 6 个平台的分步指南（Claude Desktop、ChatGPT、Claude Code、Cursor、VS Code、OpenClaw）
-- **浏览器优先授权**：OAuth 流程优先使用一键浏览器授权，手动 CLI 配置仅作备用
-- **写入-读取-验证协议**：每次写入操作均从滴答清单回读，确认字段持久化
-- **扩展触发器**：更丰富的任务管理命令意图匹配
-- **自然对话**：系统提示词全面重写，更少表单填写，更多自然教练式对话
-
----
-
-## 参与贡献
-
-欢迎提交 Issue 和 PR。如果觉得有用，点个 **Star** 帮助更多人发现这个项目。
-
----
-
-**作者**：[@siyuanfeng636-cpu](https://github.com/siyuanfeng636-cpu)
-**OpenClaw 生态**：[github.com/openclaw](https://github.com/openclaw)
-**协议**：MIT
+当前稳定版本：`v1.2.0`
