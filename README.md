@@ -119,7 +119,20 @@ $dida-coach 帮我把“系统学习 Rust”拆成两个月计划
 
 这层**不是第二套任务数据库**，不会复制完整滴答任务库，只保存管理所需的摘要和索引。
 
-### 10. OpenClaw 半自动接入（v1.2.0 新增）
+### 10. 默认接入：MCPorter + 远程 MCP（v1.3.1）
+
+现在默认优先使用这条方式：
+
+1. `mcporter config add dida-auth-backend ...`
+2. `mcporter auth https://mcp.dida365.com`
+3. 浏览器打开滴答登录/授权页
+4. 用户登录并点击授权
+5. MCPorter 或 OpenClaw 保存 token
+6. 后续直接使用 dida365
+
+这条路现在是默认接入方式，因为它最接近“外部 MCP 自动接入 + 浏览器 OAuth 一次完成”的产品体验。
+
+### 11. OpenClaw 半自动接入（兜底）
 
 对 OpenClaw，Dida-Coach 现在优先走半自动接入：
 
@@ -133,7 +146,7 @@ $dida-coach 帮我把“系统学习 Rust”拆成两个月计划
 - 不要把 `/mcp` 当成 shell 命令
 - 不要裸打开 `https://mcp.dida365.com/oauth/authorize`
 
-### 11. 像 Getnote 一样的本地 OAuth（v1.2.0 新增）
+### 12. 像 Getnote 一样的本地 OAuth（备选）
 
 如果你想要更接近 Getnote 的体验，也可以走**滴答开放平台本地 OAuth**：
 
@@ -143,6 +156,18 @@ $dida-coach 帮我把“系统学习 Rust”拆成两个月计划
 4. 授权成功后自动把 token 写入 `~/.dida-coach/dida-openapi.env`
 
 这条路线适合希望“点授权后自动落盘凭证”的用户。
+
+### 13. MCPorter 接入层（v1.3.0 新增）
+
+如果你已经在 OpenClaw 里使用 MCPorter，推荐把 dida 的接入/OAuth 层独立成一个 backend：
+
+- backend 名称：`dida-auth-backend`
+- 负责检查 dida365 是否已配置
+- 负责写 OpenClaw 的 `mcpServers`
+- 负责生成授权链接和本地 OAuth 落盘
+- 让 `dida-coach` 只专注在任务教练、时间盒、复盘和生产力管控
+
+这样可以补上“skill 本身无法稳定完成外部 MCP 接入”的问题。
 
 ---
 
@@ -160,10 +185,20 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
 
 ### 2. 连接滴答清单 MCP
 
-默认优先远程 MCP 路线：
+默认优先 `MCPorter + 远程 MCP`：
+
+```bash
+mcporter config add dida-auth-backend \
+  --command "python3" \
+  --arg "/Users/fengsiyuan/docs/scripts/dida_auth_backend.py"
+
+mcporter auth https://mcp.dida365.com
+```
+
+如果当前环境没有 MCPorter，再回退到下面这些远程 MCP 路线：
 
 - 服务地址：`https://mcp.dida365.com`
-- OpenClaw：优先半自动接入
+- OpenClaw：兜底走半自动接入
 - 其他客户端：优先页面里的 `Connect` / `Authorize`
 
 Claude Code 兜底命令：
@@ -195,7 +230,21 @@ python3 scripts/dida_openapi_oauth.py \
 
 - [`references/openapi-auth-setup.md`](references/openapi-auth-setup.md)
 
-### 4. 开始使用
+### 4. 可选：通过 MCPorter 托管接入 backend
+
+如果你已经安装 MCPorter，可以注册：
+
+```bash
+mcporter config add dida-auth-backend \
+  --command "python3" \
+  --arg "/Users/fengsiyuan/docs/scripts/dida_auth_backend.py"
+```
+
+详细说明见：
+
+- [`references/mcporter-backend-setup.md`](references/mcporter-backend-setup.md)
+
+### 5. 开始使用
 
 ```text
 $dida-coach 帮我把今天的报告排成 2 小时时间盒
@@ -209,7 +258,7 @@ $dida-coach 记录这次专注和干扰原因
 $dida-coach 做月复盘，看看为什么推进不动
 ```
 
-### 5. 个性化配置（可选）
+### 6. 个性化配置（可选）
 
 编辑 `config.yaml`，可以设置：
 
@@ -242,4 +291,4 @@ $dida-coach 做月复盘，看看为什么推进不动
 
 ## 版本
 
-当前稳定版本：`v1.2.0`
+当前稳定版本：`v1.3.0`

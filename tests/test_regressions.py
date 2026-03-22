@@ -25,6 +25,11 @@ from tools.mcp_client import (
     check_mcp_configured,
     write_openclaw_mcp_config,
 )
+from tools.mcporter_backend import (
+    BACKEND_NAME,
+    build_mcporter_backend_manifest,
+    build_mcporter_install_command,
+)
 from tools.openapi_auth import build_authorization_url, read_openapi_env, write_openapi_env
 from tools.productivity_system import (
     build_productivity_snapshot,
@@ -226,6 +231,17 @@ class HostAgnosticSetupTest(unittest.TestCase):
         self.assertEqual(values["DIDA_OPENAPI_CLIENT_SECRET"], "client-secret")
         self.assertEqual(values["DIDA_OPENAPI_ACCESS_TOKEN"], "token-1")
         self.assertEqual(values["DIDA_OPENAPI_REFRESH_TOKEN"], "refresh-1")
+
+    def test_mcporter_manifest_points_to_backend_script(self) -> None:
+        manifest = build_mcporter_backend_manifest()
+        self.assertEqual(manifest["name"], BACKEND_NAME)
+        self.assertEqual(manifest["command"], sys.executable)
+        self.assertTrue(str(manifest["args"][0]).endswith("scripts/dida_auth_backend.py"))
+
+    def test_mcporter_install_command_mentions_backend_name(self) -> None:
+        command = build_mcporter_install_command()
+        self.assertIn("config add dida-auth-backend", command)
+        self.assertIn("dida_auth_backend.py", command)
 
     def test_load_config_prefers_existing_codex_user_config(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -439,6 +455,32 @@ class PromptContractTest(unittest.TestCase):
         self.assertIn("localhost:38000/callback", readme)
         self.assertIn("像 Getnote 一样", skill)
         self.assertIn("dida-openapi.env", reference)
+
+    def test_setup_docs_mention_mcporter_backend_route(self) -> None:
+        prompt = (ROOT / "prompts" / "setup.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        reference = (ROOT / "references" / "mcporter-backend-setup.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("MCPorter", prompt)
+        self.assertIn("dida-auth-backend", prompt)
+        self.assertIn("MCPorter 接入层", readme)
+        self.assertIn("dida-auth-backend", skill)
+        self.assertIn("mcporter config add dida-auth-backend", reference)
+
+    def test_default_onboarding_prefers_mcporter_remote_mcp(self) -> None:
+        prompt = (ROOT / "prompts" / "setup.md").read_text(encoding="utf-8")
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        reference = (ROOT / "references" / "mcporter-backend-setup.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("默认先看 [`references/mcporter-backend-setup.md`", prompt)
+        self.assertIn("mcporter auth https://mcp.dida365.com", prompt)
+        self.assertIn("默认优先走 “MCPorter + 远程 MCP” 路线", skill)
+        self.assertIn("默认优先 `MCPorter + 远程 MCP`", readme)
+        self.assertIn("注册完以后，默认直接执行远程 MCP 授权", reference)
 
     def test_checkpoint_prompt_requires_local_time_recalculation(self) -> None:
         prompt = (ROOT / "prompts" / "checkpoint.md").read_text(encoding="utf-8")

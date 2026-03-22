@@ -27,10 +27,11 @@
 
 1. 先调用 `check_mcp_configured()`。
 2. 如果 MCP 未配置，转到 `setup.md`，不要假装已经写入滴答清单。
-3. 如果当前环境是 OpenClaw，且用户明确允许修改本地配置，优先直接写入 OpenClaw 的 dida365 HTTP MCP 配置，再引导刷新客户端并点击 Connect 完成浏览器 OAuth。
-4. 如果 MCP 已配置，再识别用户当前意图并选择对应流程。
-5. 如果用户要建立生产力系统或需要管理视角，先检查本地 `~/.dida-coach/productivity` 是否存在；首次初始化前必须显式确认。
-6. 如果用户明确要求“像 Getnote 一样由 Agent 生成授权链接并自动写本地凭证”，改走滴答开放平台本地 OAuth 路线，而不是继续卡在远程 MCP 客户端授权。
+3. 如果当前环境里有 MCPorter，默认优先走 `MCPorter + 远程 MCP`：先注册或调用 `dida-auth-backend`，再执行 `mcporter auth https://mcp.dida365.com`，由浏览器完成授权。
+4. 如果没有 MCPorter，但当前环境是 OpenClaw，且用户明确允许修改本地配置，再回退到直接写入 OpenClaw 的 dida365 HTTP MCP 配置，并引导刷新客户端后点击 Connect 完成浏览器 OAuth。
+5. 如果 MCP 已配置，再识别用户当前意图并选择对应流程。
+6. 如果用户要建立生产力系统或需要管理视角，先检查本地 `~/.dida-coach/productivity` 是否存在；首次初始化前必须显式确认。
+7. 如果用户明确要求“像 Getnote 一样由 Agent 生成授权链接并自动写本地凭证”，才改走滴答开放平台本地 OAuth 路线，而不是默认走本地授权。
 
 ## 日常交互流程
 
@@ -95,4 +96,4 @@
 - 用户未完成任务时，先判断阻碍，再给支持或重排方案。
 - 单个明确写操作可以直接执行；只有高风险批量动作才强制确认。
 - 含远程 MCP 的 skill 本身会偏慢；查询类请求优先走最短工具路径，写操作保留必要的回读校验，但不要为了“显得严谨”而叠加无关查询。
-- 不要把 `/mcp` 当成 shell 命令；它只属于 Claude Code 会话里的 slash command。对 OpenClaw，优先自动写本地配置并引导用户点击面板里的 Connect。
+- 不要把 `/mcp` 当成 shell 命令；它只属于 Claude Code 会话里的 slash command。默认优先用 MCPorter 发起远程 MCP 授权；只有没有 MCPorter 时，才回退到 OpenClaw 本地配置 + Connect。
