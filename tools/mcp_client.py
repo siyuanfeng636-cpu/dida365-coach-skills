@@ -88,26 +88,14 @@ def get_openclaw_config_path() -> Path:
 
 
 def build_setup_guide() -> str:
-    """返回 MCP 未配置时的引导文案。"""
+    """返回 dida-cli 未登录时的引导文案。"""
 
     return (
         "👋 欢迎使用 Dida Coach！\n\n"
-        "检测到你还没有连接滴答清单。先按你当前使用的客户端选择最快路径：\n\n"
-        "1. OpenClaw：优先自动把 dida365 写进 OpenClaw 的 MCP 配置，再刷新客户端并点一次 Connect。\n"
-        "   推荐配置片段：\n"
-        '   {"mcpServers":{"dida365":{"transport":{"type":"http","url":"https://mcp.dida365.com"}}}}\n'
-        "2. ClawHub / 其他带连接按钮的客户端：直接点 dida365 的 Connect、Authorize、Sign in 或 Enable。\n"
-        "3. Claude Desktop：Customize > Connectors > Add Connector > 填 URL > Connect。\n"
-        "4. ChatGPT：设置 > 应用 > 高级设置 > 开发人员模式 > 创建应用 > 填 URL。\n"
-        "5. Cursor / VS Code：在 MCP 设置页添加 dida365，然后点 connect。\n"
-        "6. Claude Code：运行下面这条兜底命令，再在 Claude 会话里执行 `/mcp` 授权。\n\n"
-        "所有客户端统一使用这组连接信息：\n\n"
-        f"- 服务名：{DEFAULT_SERVER_NAME}\n"
-        f"- 服务地址：{DEFAULT_MCP_URL}\n"
-        "- 传输方式：HTTP 或 streamable_http\n"
-        f"- Claude Code 兜底命令：claude mcp add --transport http {DEFAULT_SERVER_NAME} {DEFAULT_MCP_URL}\n\n"
-        "如果你在 OpenClaw 里允许我改本地配置，我会优先帮你写入 dida365 的 MCP 配置，再引导你刷新客户端并点击 Connect 完成浏览器 OAuth。\n"
-        "不要把 `/mcp` 当成 shell 命令直接执行；它只属于 Claude Code 会话内的 slash command。\n\n"
+        "检测到你还没有连接滴答清单。请只按 dida-cli 这条路径完成认证：\n\n"
+        "1. 如果 `dida` 还没安装，先执行：npm install -g @suibiji/dida-cli\n"
+        "2. 执行：dida auth login\n"
+        "3. 浏览器完成授权后，执行：dida auth status\n\n"
         "完成浏览器授权后，告诉我“已连接”，我会继续帮你拆目标、排时间盒和做复盘。"
     )
 

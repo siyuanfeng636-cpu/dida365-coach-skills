@@ -11,6 +11,8 @@
 
 按天收集本周任务，确保能按日期分组。
 
+同时保留每个任务的清单名称，周复盘里涉及具体任务反馈时，优先按清单分组，不要只堆任务标题。
+
 如果本地生产力系统已初始化，先准备并允许刷新这些文件：
 
 - `dashboard.md`
@@ -21,12 +23,13 @@
 - `planning/weekly.md`
 - `reviews/weekly.md`
 
-推荐工具组合：
+推荐命令组合：
 
-- 本周未完成：`list_undone_tasks_by_date`
-- 本周已完成：`list_completed_tasks_by_date`
+- 先 `dida project list --json` 收集清单 ID
+- 本周未完成：`dida task filter --projects <ids> --start-date <iso> --end-date <iso> --status 0 --json`
+- 本周已完成：`dida task completed --projects <ids> --start-date <iso> --end-date <iso> --json`
 
-如果还要按优先级、标签、类型细分，可追加 `filter_tasks`。
+如果还要按优先级、标签细分，可追加 `dida task filter --priority ... --json`。
 
 ### Step 2: 计算趋势
 
@@ -65,6 +68,7 @@
 
 不要只做回顾；要把周复盘自然衔接到下周规划。
 周复盘不是只看任务完成率，还要结合承诺、等待项和干扰模式。
+如果点名某些任务或项目，至少带上所属清单名称，避免跨清单同名任务混淆。
 
 如果状态字段与完成时间字段冲突，优先保守处理为“待人工确认”，不要直接算作已完成。
 

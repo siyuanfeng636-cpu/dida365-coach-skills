@@ -51,13 +51,13 @@
 - 默认提醒策略
 - 优先级映射：`!1` 低、`!2` 中、`!3` 高
 
-确认后再写入滴答清单。
+确认后再通过 dida-cli 写入滴答清单。
 
 写入阶段任务时，优先使用：
 
-- 单个阶段创建：`create_task`
-- 多个阶段一起创建：`batch_add_tasks`
-- 创建后逐个回读：`get_task_by_id`
+- 先 `dida project list --json` 找到目标清单 ID
+- 每个阶段用 `dida task create --title "<title>" --project <projectId> --content "<content>" --priority <n> --json`
+- 创建后逐个回读：`dida task get <projectId> <taskId> --json`
 
 ### Step 4: 设置检查点
 

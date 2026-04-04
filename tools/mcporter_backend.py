@@ -46,6 +46,9 @@ def build_mcporter_backend_manifest(script_path: Optional[Path] = None) -> Dict[
         "supports": [
             "status",
             "configure-openclaw",
+            "dida-cli-status",
+            "dida-cli-login",
+            "dida-cli-install",
             "authorization-url",
             "oauth-local",
             "serve-jsonl",

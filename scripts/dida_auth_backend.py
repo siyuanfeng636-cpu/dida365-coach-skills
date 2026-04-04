@@ -5,9 +5,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from typing import Any, Dict
 
+from tools.dida_cli_auth import (
+    build_dida_cli_install_command,
+    build_dida_cli_login_command,
+    build_dida_cli_setup_guide,
+    build_dida_cli_status_command,
+    detect_dida_cli_binary,
+)
 from tools.mcp_client import (
     build_openclaw_connect_guide,
     check_mcp_configured,
@@ -25,6 +33,16 @@ from tools.openapi_auth import (
 
 def _print(data: Dict[str, Any]) -> None:
     print(json.dumps(data, ensure_ascii=False))
+
+
+def _run_command(command: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        shell=True,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
 
 
 def cmd_status(_: argparse.Namespace) -> int:
@@ -51,6 +69,76 @@ def cmd_configure_openclaw(_: argparse.Namespace) -> int:
         }
     )
     return 0
+
+
+def cmd_dida_cli_status(_: argparse.Namespace) -> int:
+    dida_bin = detect_dida_cli_binary()
+    if not dida_bin:
+        _print(
+            {
+                "ok": False,
+                "installed": False,
+                "install_command": build_dida_cli_install_command(),
+                "guide": build_dida_cli_setup_guide(),
+            }
+        )
+        return 1
+
+    result = _run_command(build_dida_cli_status_command())
+    _print(
+        {
+            "ok": result.returncode == 0,
+            "installed": True,
+            "binary": dida_bin,
+            "command": build_dida_cli_status_command(),
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+            "returncode": result.returncode,
+        }
+    )
+    return 0 if result.returncode == 0 else 1
+
+
+def cmd_dida_cli_install(_: argparse.Namespace) -> int:
+    result = _run_command(build_dida_cli_install_command())
+    _print(
+        {
+            "ok": result.returncode == 0,
+            "command": build_dida_cli_install_command(),
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+            "returncode": result.returncode,
+        }
+    )
+    return 0 if result.returncode == 0 else 1
+
+
+def cmd_dida_cli_login(_: argparse.Namespace) -> int:
+    dida_bin = detect_dida_cli_binary()
+    if not dida_bin:
+        _print(
+            {
+                "ok": False,
+                "installed": False,
+                "install_command": build_dida_cli_install_command(),
+                "guide": build_dida_cli_setup_guide(),
+            }
+        )
+        return 1
+
+    result = _run_command(build_dida_cli_login_command())
+    _print(
+        {
+            "ok": result.returncode == 0,
+            "binary": dida_bin,
+            "command": build_dida_cli_login_command(),
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+            "returncode": result.returncode,
+            "guide": "如果命令成功，浏览器应已被拉起；授权完成后再运行 dida auth status 确认。",
+        }
+    )
+    return 0 if result.returncode == 0 else 1
 
 
 def cmd_authorization_url(args: argparse.Namespace) -> int:
@@ -117,6 +205,17 @@ def cmd_serve_jsonl(_: argparse.Namespace) -> int:
             "configured": check_mcp_configured()[0],
             "message": check_mcp_configured()[1],
         },
+        "dida-cli-status": lambda payload: {
+            "ok": detect_dida_cli_binary() is not None,
+            "installed": detect_dida_cli_binary() is not None,
+            "command": build_dida_cli_status_command(),
+            "install_command": build_dida_cli_install_command(),
+        },
+        "dida-cli-login": lambda payload: {
+            "ok": detect_dida_cli_binary() is not None,
+            "command": build_dida_cli_login_command(),
+            "install_command": build_dida_cli_install_command(),
+        },
         "configure-openclaw": lambda payload: {
             "ok": True,
             "config_path": str(write_openclaw_mcp_config()),
@@ -164,6 +263,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     configure = subparsers.add_parser("configure-openclaw")
     configure.set_defaults(func=cmd_configure_openclaw)
+
+    dida_cli_status = subparsers.add_parser("dida-cli-status")
+    dida_cli_status.set_defaults(func=cmd_dida_cli_status)
+
+    dida_cli_install = subparsers.add_parser("dida-cli-install")
+    dida_cli_install.set_defaults(func=cmd_dida_cli_install)
+
+    dida_cli_login = subparsers.add_parser("dida-cli-login")
+    dida_cli_login.set_defaults(func=cmd_dida_cli_login)
 
     auth_url = subparsers.add_parser("authorization-url")
     auth_url.add_argument("--client-id", required=True)

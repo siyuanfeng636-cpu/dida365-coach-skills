@@ -1,19 +1,13 @@
 name: dida-coach
-description: 生产力管控系统与滴答执行层结合的任务教练，负责目标拆解、时间盒安排、管理视角、承诺跟踪、专注复盘，以及更自然的任务查询、创建、更新与闭环支持
-version: 1.3.0
+description: 基于 dida-cli 和本地生产力系统的任务教练，负责目标拆解、时间盒安排、管理视角、承诺跟踪、专注复盘，以及更自然的任务查询、创建、更新与闭环支持
+version: 1.4.0
 author: openclaw
-
-setup:
-  required_mcp:
-    - name: dida365
-      url: https://mcp.dida365.com
-      description: 滴答清单 MCP，用于任务读写和状态同步
 
 entry_points:
   default:
     prompt: prompts/system.md
     tools:
-      - tools.mcp_client
+      - tools.dida_cli_auth
       - tools.config_manager
       - tools.task_parser
       - tools.timebox_calculator

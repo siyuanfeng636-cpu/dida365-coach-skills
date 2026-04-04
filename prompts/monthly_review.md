@@ -24,12 +24,15 @@
 
 优先获取：
 
-- 本月未完成任务：`list_undone_tasks_by_date`
-- 本月已完成任务：`list_completed_tasks_by_date`
+- 先 `dida project list --json` 收集清单 ID
+- 本月未完成任务：`dida task filter --projects <ids> --start-date <iso> --end-date <iso> --status 0 --json`
+- 本月已完成任务：`dida task completed --projects <ids> --start-date <iso> --end-date <iso> --json`
+
+如果要在月复盘里举具体任务例子，保留所属清单名称，并优先按清单或项目维度归纳。
 
 必要时追加：
 
-- `filter_tasks`
+- `dida task filter --projects <ids> --priority <levels> --status 0 --json`
 
 如果完成状态和历史完成记录冲突，优先保守处理，不要把历史完成误当本月已完成。
 
@@ -57,6 +60,7 @@
 ```
 
 如果信息不完整，不必硬凑完整报告；优先输出最有判断力的 2-4 条结论。
+涉及具体任务反馈时，使用“清单名称 + 任务标题”，不要只报标题。
 
 ### Step 5: 更新本地文件
 

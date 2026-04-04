@@ -13,6 +13,15 @@ from .dida_semantics import (
     priority_label,
     priority_to_numeric,
 )
+from .dida_cli_auth import (
+    build_dida_cli_install_command,
+    build_dida_cli_login_command,
+    build_dida_cli_logout_command,
+    build_dida_cli_setup_guide,
+    build_dida_cli_status_command,
+    detect_dida_cli_binary,
+    detect_npm_binary,
+)
 from .mcp_client import check_mcp_configured, get_mcp_setup_command
 from .mcp_client import (
     build_openclaw_connect_guide,
@@ -73,11 +82,18 @@ __all__ = [
     "build_productivity_snapshot",
     "build_openclaw_connect_guide",
     "build_authorization_url",
+    "build_dida_cli_install_command",
+    "build_dida_cli_login_command",
+    "build_dida_cli_logout_command",
+    "build_dida_cli_setup_guide",
+    "build_dida_cli_status_command",
     "build_mcporter_backend_manifest",
     "build_mcporter_install_command",
     "calculate_timeboxes",
     "check_mcp_configured",
+    "detect_dida_cli_binary",
     "detect_mcporter_binary",
+    "detect_npm_binary",
     "explain_work_method",
     "extend_box_duration",
     "extract_priority",

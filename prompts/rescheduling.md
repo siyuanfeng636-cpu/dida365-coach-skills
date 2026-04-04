@@ -35,11 +35,17 @@
 
 改时间后应同步：
 
-1. 用 `update_task` 同步滴答清单任务截止时间
+1. 用 `dida task update <taskId> --id <taskId> --project <projectId> --start-date ... --due-date ... --json` 同步滴答清单任务截止时间
 2. 检查点提醒
 3. 闭环追踪记录
 
-更新后优先用 `get_task_by_id` 回读；如果改动涉及清单归属，再用 `get_task_in_project` 或 `get_project_with_undone_tasks` 核对。
+更新后优先用 `dida task get <projectId> <taskId> --json` 回读；如果改动涉及清单归属，再用 `dida project data <projectId> --json` 核对。
+
+如果后续还会继续提醒这个任务，新的提醒必须基于回读后的最新任务信息生成。
+
+- 不要沿用改期前的截止时间、提醒时间或任务描述
+- 如果改期后时间发生明显变化，要在下一次提醒里明确通报“已改到什么时候”
+- 如果改期同时修改了任务内容，也要把新内容一并通报，而不是只报时间
 
 ## 取消全部时
 

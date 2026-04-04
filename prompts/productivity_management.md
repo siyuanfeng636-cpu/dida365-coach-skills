@@ -25,10 +25,10 @@
 1. 先明确说明将写入 `~/.dida-coach/productivity/`
 2. 必须拿到一次明确确认
 3. 再调用本地生产力系统工具初始化目录和模板
-4. 如果 dida365 已连接，优先读取：
-   - `list_projects`
-   - `list_undone_tasks_by_time_query`
-   - `list_completed_tasks_by_date`
+4. 如果 dida-cli 已登录，优先读取：
+   - `dida project list --json`
+   - `dida task filter --projects <ids> --start-date <iso> --end-date <iso> --status 0 --json`
+   - `dida task completed --projects <ids> --start-date <iso> --end-date <iso> --json`
 5. 根据现有项目、未完成任务、近期完成情况，生成首批文件：
    - `dashboard.md`
    - `commitments/promises.md`

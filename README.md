@@ -2,178 +2,57 @@
 
 [![Stars](https://img.shields.io/github/stars/siyuanfeng636-cpu/dida365-coach-skills?style=social)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
+[![Version](https://img.shields.io/badge/version-v1.4.0-blue.svg)](https://github.com/siyuanfeng636-cpu/dida365-coach-skills/releases)
 
-> **让滴答清单成为你的 AI 效率教练。**
-> 不只是待办清单，而是一套覆盖目标拆解、专注执行、管理视角、复盘改进的生产力系统。
+> 让滴答清单成为你的 AI 效率教练。
+> 这版技能只使用 `dida-cli`，不再依赖远程 MCP。
 
-```text
-"$dida-coach 帮我把'提高英语口语'拆成 3 个月计划"
+## 核心能力
+
+- 目标拆解：把长期目标拆成阶段任务和检查点
+- 时间盒：按时段落地成真实滴答任务，并带提醒
+- 通用任务管理：查清单、查任务、创建、更新、完成、移动
+- 生产力管控：本地沉淀 dashboard、承诺、等待项、专注记录、周月复盘
+- 闭环跟进：任务延期、变更、提醒前先回读当前状态
+
+## 接入方式
+
+默认自动认证：`dida-cli`
+
+只支持 `dida-cli`：
+
+```bash
+npm install -g @suibiji/dida-cli
+dida auth login
+dida auth status
 ```
 
----
+浏览器授权完成后，就可以直接使用 `$dida-coach`。
 
-## 为什么选择 Dida-Coach？
+## 真实 CLI 基线
 
-大多数 AI 效率工具止步于*创建*任务。Dida-Coach 更进一步：它能**规划**、**排程**、**追踪**、**复盘**，并从你的执行数据中**学习**，全程通过自然对话完成。
+这版 skill 的滴答执行层统一基于这些命令：
 
-| 痛点 | Dida-Coach 的解决方案 |
-| :--- | :--- |
-| AI 方案停在聊天窗口，永远到不了手机上 | 通过 MCP 协议同步至滴答清单，手机、平板、手表随时可用 |
-| 通用番茄钟无视任务上下文 | 根据任务类型与精力状态推荐 25 / 30 / 50 / 90 分钟时间盒 |
-| 错过截止日期后无人跟进 | 闭环状态机：创建 → 执行 → 检查点 → 完成 / 重排 / 取消 |
-| 复盘只是模糊的“今天感觉如何？” | 模式识别可定位何时、为何拖延，并给出自动化建议 |
-| 只有执行，没有管理视角 | 新增本地生产力管控层，沉淀 dashboard、承诺、等待项、专注与周月复盘 |
+- 登录：`dida auth login`
+- 查看状态：`dida auth status`
+- 列清单：`dida project list --json`
+- 查清单详情：`dida project get <projectId> --json`
+- 查清单及其任务：`dida project data <projectId> --json`
+- 创建任务：`dida task create ... --json`
+- 获取任务：`dida task get <projectId> <taskId> --json`
+- 更新任务：`dida task update <taskId> --id <taskId> --project <projectId> ... --json`
+- 完成任务：`dida task complete <projectId> <taskId>`
+- 移动任务：`dida task move --from <sourceProjectId> --to <destProjectId> --task <taskId>`
+- 筛选任务：`dida task filter ... --json`
+- 查询已完成：`dida task completed ... --json`
 
----
+完整路由见：
 
-## 核心功能
-
-### 1. 目标拆解
-
-将长期目标拆分为阶段性计划与可衡量的里程碑，避免“只有愿望，没有执行层”。
-
-```text
-$dida-coach 帮我把“系统学习 Rust”拆成两个月计划
-```
-
-### 2. 智能 Time-Boxing（时间盒）
-
-每个时间盒都包含一个**可验证的交付物**，而不只是时长。
-
-| 方法 | 专注时长 | 适用场景 |
-| :--- | :--- | :--- |
-| 经典番茄钟 | 25 分钟 | 快速任务、邮件批处理 |
-| 弹性番茄钟 | 30 分钟 | 通用知识工作 |
-| 长番茄钟 | 50 分钟 | 深度写作、编程 |
-| 超日节律 | 90 分钟 | 创意工作、复杂分析 |
-
-### 3. 全面任务管理
-
-通过自然语言管理滴答清单：
-
-- 查询任务、清单、筛选条件
-- 创建任务、更新时间、提醒、优先级
-- 标记完成、跨清单移动
-- 所有写操作默认执行后回读验证
-
-### 4. 多客户端 MCP 支持
-
-支持 Claude Desktop、Claude Code、ChatGPT、Cursor、VS Code、OpenClaw、ClawHub 等客户端。
-
-- 有 `Connect`、`Authorize`、`Sign in` 按钮时，优先直接点击
-- OpenClaw 支持“半自动接入”：先自动写本地 MCP 配置，再点击连接
-- Claude Code 仍保留 `claude mcp add` 作为兜底路径
-
-### 5. MCP 工具路由约束
-
-严格把用户意图映射到*真实存在的*滴答 MCP 工具名，并要求写后回读：
-
-```text
-"今天有什么任务？"   -> list_undone_tasks_by_time_query
-"创建一个任务"       -> create_task -> get_task_by_id
-"把任务移到工作清单" -> move_task -> get_task_by_id
-"做周复盘"           -> list_completed_tasks_by_date + list_undone_tasks_by_date
-```
-
-### 6. 四种教练人格
-
-可配置温暖鼓励型、严格教练型、理性分析型、幽默风趣型，也可在对话中临时覆盖。
-
-### 7. 深度复盘与拖延检测
-
-支持日复盘、周复盘、月复盘，并分析：
-
-- 完成率与高峰时段
-- 任务类型分布
-- 拖延模式
-- 自动化候选项
-- 下阶段最小有效改进动作
-
-### 8. 闭环状态机
-
-每个任务都走完整闭环：
-
-```text
-已创建 -> 执行中 -> 检查点 -> 已完成
-                   ↓
-                已重排 -> 执行中 -> ...
-                   ↓
-                已取消（附原因）
-```
-
-### 9. 本地生产力管控层（v1.2.0 新增）
-
-在滴答执行层之上，新增本地生产力系统，固定目录：
-
-- `~/.dida-coach/productivity/`
-
-它负责沉淀：
-
-- `dashboard.md`：当前重点、风险、过载提醒
-- `commitments/`：承诺、等待项、委派事项
-- `planning/`：日计划、周计划、专注块
-- `reviews/`：周复盘、月复盘
-- `focus/`：专注记录、干扰模式
-- `routines/`：晨间流程、收尾流程
-
-这层**不是第二套任务数据库**，不会复制完整滴答任务库，只保存管理所需的摘要和索引。
-
-### 10. 默认接入：MCPorter + 远程 MCP（v1.3.1）
-
-现在默认优先使用这条方式：
-
-1. `mcporter config add dida-auth-backend ...`
-2. `mcporter auth https://mcp.dida365.com`
-3. 浏览器打开滴答登录/授权页
-4. 用户登录并点击授权
-5. MCPorter 或 OpenClaw 保存 token
-6. 后续直接使用 dida365
-
-这条路现在是默认接入方式，因为它最接近“外部 MCP 自动接入 + 浏览器 OAuth 一次完成”的产品体验。
-
-### 11. OpenClaw 半自动接入（兜底）
-
-对 OpenClaw，Dida-Coach 现在优先走半自动接入：
-
-1. 自动把 dida365 写进 `~/.openclaw/openclaw.json`
-2. 刷新或重启 OpenClaw
-3. 在 MCP / Tools / 依赖面板里点击 `Connect`、`Authorize` 或 `Sign in`
-4. 浏览器完成 OAuth 后回到对话继续
-
-注意：
-
-- 不要把 `/mcp` 当成 shell 命令
-- 不要裸打开 `https://mcp.dida365.com/oauth/authorize`
-
-### 12. 像 Getnote 一样的本地 OAuth（备选）
-
-如果你想要更接近 Getnote 的体验，也可以走**滴答开放平台本地 OAuth**：
-
-1. 在滴答开放平台创建应用
-2. 回调地址填 `http://localhost:38000/callback`
-3. 使用本仓库内置 helper 生成授权链接
-4. 授权成功后自动把 token 写入 `~/.dida-coach/dida-openapi.env`
-
-这条路线适合希望“点授权后自动落盘凭证”的用户。
-
-### 13. MCPorter 接入层（v1.3.0 新增）
-
-如果你已经在 OpenClaw 里使用 MCPorter，推荐把 dida 的接入/OAuth 层独立成一个 backend：
-
-- backend 名称：`dida-auth-backend`
-- 负责检查 dida365 是否已配置
-- 负责写 OpenClaw 的 `mcpServers`
-- 负责生成授权链接和本地 OAuth 落盘
-- 让 `dida-coach` 只专注在任务教练、时间盒、复盘和生产力管控
-
-这样可以补上“skill 本身无法稳定完成外部 MCP 接入”的问题。
-
----
+- [references/dida-cli-routing.md](/Users/fengsiyuan/docs/references/dida-cli-routing.md)
 
 ## 快速上手
 
-### 1. 安装技能
+1. 安装技能
 
 ```bash
 python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
@@ -181,114 +60,61 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
   --path .
 ```
 
-安装后重启 Codex、OpenClaw 或兼容客户端。
-
-### 2. 连接滴答清单 MCP
-
-默认优先 `MCPorter + 远程 MCP`：
+2. 安装并登录 dida-cli
 
 ```bash
-mcporter config add dida-auth-backend \
-  --command "python3" \
-  --arg "/Users/fengsiyuan/docs/scripts/dida_auth_backend.py"
-
-mcporter auth https://mcp.dida365.com
+npm install -g @suibiji/dida-cli
+dida auth login
+dida auth status
 ```
 
-如果当前环境没有 MCPorter，再回退到下面这些远程 MCP 路线：
-
-- 服务地址：`https://mcp.dida365.com`
-- OpenClaw：兜底走半自动接入
-- 其他客户端：优先页面里的 `Connect` / `Authorize`
-
-Claude Code 兜底命令：
-
-```bash
-claude mcp add --transport http dida365 https://mcp.dida365.com
-```
-
-不同客户端的最短配置方式见：
-
-- [`references/mcp-client-setup.md`](references/mcp-client-setup.md)
-
-### 3. 可选：使用本地 Open API OAuth
-
-如果你想要“像 Getnote 一样”的授权体验：
-
-1. 去滴答开放平台创建应用
-2. 回调地址填 `http://localhost:38000/callback`
-3. 运行：
-
-```bash
-python3 scripts/dida_openapi_oauth.py \
-  --client-id YOUR_CLIENT_ID \
-  --client-secret YOUR_CLIENT_SECRET \
-  --open-browser
-```
-
-详细说明见：
-
-- [`references/openapi-auth-setup.md`](references/openapi-auth-setup.md)
-
-### 4. 可选：通过 MCPorter 托管接入 backend
-
-如果你已经安装 MCPorter，可以注册：
-
-```bash
-mcporter config add dida-auth-backend \
-  --command "python3" \
-  --arg "/Users/fengsiyuan/docs/scripts/dida_auth_backend.py"
-```
-
-详细说明见：
-
-- [`references/mcporter-backend-setup.md`](references/mcporter-backend-setup.md)
-
-### 5. 开始使用
+3. 开始使用
 
 ```text
+$dida-coach 列出所有清单
+$dida-coach 帮我创建一个今天下午 3 点截止、提前 30 分钟提醒的任务，放到工作清单
+$dida-coach 把“买牛奶”移到生活清单
 $dida-coach 帮我把今天的报告排成 2 小时时间盒
-$dida-coach 告诉我今天有哪些未完成任务
-$dida-coach 列出所有清单并把“买牛奶”移到生活清单
-$dida-coach 复盘今天为什么效率差
-$dida-coach 帮我建立生产力系统，并从现有滴答任务生成初稿
-$dida-coach 看一下我当前最该推进什么
-$dida-coach 帮我梳理这周承诺和等待项
-$dida-coach 记录这次专注和干扰原因
-$dida-coach 做月复盘，看看为什么推进不动
+$dida-coach 复盘今天
+$dida-coach 帮我建立生产力系统
 ```
 
-### 6. 个性化配置（可选）
+## 本地生产力系统
 
-编辑 `config.yaml`，可以设置：
+初始化后会写入：
 
-- 默认教练人格
-- 工作方法
-- 提醒时间
-- 本地生产力系统根目录与受管文件
+- `~/.dida-coach/productivity/dashboard.md`
+- `~/.dida-coach/productivity/commitments/`
+- `~/.dida-coach/productivity/planning/`
+- `~/.dida-coach/productivity/reviews/`
+- `~/.dida-coach/productivity/focus/`
+- `~/.dida-coach/productivity/routines/`
 
----
+这层不是第二套任务数据库，只保存管理所需的摘要和索引。
+
+## 关键行为约束
+
+- 任务反馈、提醒和复盘中的具体任务，默认带上所属清单名称
+- 到期提醒、延期提醒、变更后提醒，都会先回读滴答当前任务
+- 如果时间、内容或状态有变化，会先通报最新版本，再决定是否继续提醒
+- 创建或更新后必须回读，不会只报“已成功”
+- 所有相对时间判断都以用户当前本地时区为准
 
 ## 时区与性能说明
 
 - 所有“现在 / 今天 / 明天 / 还有多久 / 下午几点前”这类相对时间判断，都以用户当前本地时区为准
 - 说“还有 X 分钟 / 小时”前，必须基于当前本地时间和目标绝对时间重新计算
-- 含远程 MCP 的 skill 比纯本地 prompt 慢，因为远程 HTTP MCP 有网络往返，写后还会做回读校验
-- 想更快时，优先用单次只读请求；批量写入时尽量一次把意图说完整
-
----
+- 任务反馈、提醒和复盘里的具体任务，默认都会带上所属清单名称；多任务场景优先按清单分组反馈
+- 这版 skill 以本地 CLI 为主，通常比远程 MCP 链路更直接；但写操作仍会保留必要回读，所以批量动作会更慢一些
 
 ## 仓库结构
 
-- [`SKILL.md`](SKILL.md)：技能入口说明
-- [`skill.yaml`](skill.yaml)：技能元数据与触发器
-- [`config.yaml`](config.yaml)：默认人格、工作法、提醒与本地系统配置
-- [`prompts/`](prompts/)：任务管理、生产力管控、时间盒、复盘等提示词
-- [`references/`](references/)：MCP 接入、开放平台 OAuth、字段语义与工具路由说明
-- [`tools/`](tools/)：MCP 检测、本地配置写入、Open API OAuth、本地生产力系统逻辑
-- [`scripts/`](scripts/)：本地 OAuth helper
-- [`tests/`](tests/)：回归测试
+- [SKILL.md](/Users/fengsiyuan/docs/SKILL.md)：技能入口说明
+- [skill.yaml](/Users/fengsiyuan/docs/skill.yaml)：技能元数据与触发规则
+- [prompts/](/Users/fengsiyuan/docs/prompts)：对话流程
+- [tools/dida_cli_auth.py](/Users/fengsiyuan/docs/tools/dida_cli_auth.py)：CLI 安装/登录/状态辅助
+- [references/dida-cli-routing.md](/Users/fengsiyuan/docs/references/dida-cli-routing.md)：CLI 路由基线
 
 ## 版本
 
-当前稳定版本：`v1.3.0`
+当前稳定版本：`v1.4.0`
